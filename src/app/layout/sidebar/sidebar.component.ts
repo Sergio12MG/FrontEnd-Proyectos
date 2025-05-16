@@ -14,8 +14,8 @@ import {
   HostListener,
   OnDestroy,
 } from '@angular/core';
-// import { ROUTES } from './sidebar-items';
-// import { AuthService } from '@core';
+import { ROUTES } from './sidebar-items';
+import { AuthService } from '@core';
 import { RouteInfo } from './sidebar.metadata';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatButtonModule } from '@angular/material/button';
@@ -58,7 +58,7 @@ export class SidebarComponent
     @Inject(DOCUMENT) private readonly _document: Document,
     private readonly _renderer: Renderer2,
     public readonly _elementRef: ElementRef,
-    // private readonly _authService: AuthService,
+    private readonly _authService: AuthService,
     private readonly _router: Router,
     private readonly _domSanitizer: DomSanitizer
   ) {
@@ -69,8 +69,8 @@ export class SidebarComponent
         this._renderer.removeClass(this._document.body, 'overlay-open');
       }
     });
-    // const roleInfo = this._authService.getRoleInfoByToken();
-    // this.userLogged = roleInfo ? roleInfo.roleName : undefined;
+    const roleInfo = this._authService.getRoleInfoByToken();
+    this.userLogged = roleInfo ? roleInfo.roleName : undefined;
   }
   @HostListener('window:resize', ['$event'])
   windowResizecall() {
@@ -116,10 +116,10 @@ export class SidebarComponent
   }
 
   ngOnInit() {
-    // const rolAuthority = this._authService.getAuthFromSessionStorage().rol_id;
-    // this.sidebarItems = ROUTES.filter((sidebarItem) => sidebarItem?.rolAuthority.includes(rolAuthority));
-    // this.initLeftSidebar();
-    // this.bodyTag = this._document.body;
+    const rolAuthority = this._authService.getAuthFromSessionStorage().rol_id;
+    this.sidebarItems = ROUTES.filter((sidebarItem) => sidebarItem?.rolAuthority.includes(rolAuthority));
+    this.initLeftSidebar();
+    this.bodyTag = this._document.body;
   }
 
 

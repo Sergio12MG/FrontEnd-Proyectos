@@ -13,6 +13,13 @@ export const APP_ROUTE: Route[] = [
         loadChildren: () =>
           import('./dashboard/dashboard.routes').then((m) => m.DASHBOARD_ROUTE),
       },
+      {
+        path: 'page',
+        loadChildren: () =>
+          import('./pages/pages.routes').then(
+            (m) => m.PAGES_ROUTE
+          ),
+      },
     ],
   },
   {
