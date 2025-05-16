@@ -40,6 +40,7 @@
     "@types/d3-shape": "^3.1.6",
     "@types/gapi.auth2": "^0.0.61",
     "angular-feather": "^6.5.1",
+    "angular-material": "^1.2.5",
     "apexcharts": "^3.49.1",
     "bootstrap": "^5.3.3",
     "browser-sync": "^3.0.2",
