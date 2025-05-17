@@ -15,13 +15,12 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { ModalCreateUserComponent } from '../modal-create-user/modal-create-user.component';
 import { MatDialog } from '@angular/material/dialog';
-import { ModalEditUsersComponent } from '../modal-edit-users/modal-edit-users.component';
 import { ProjectsService } from 'app/services/projects/projects.service';
 import { debounce, debounceTime, distinctUntilChanged } from 'rxjs';
 import { ModalCreateProjectComponent } from '../modal-create-project/modal-create-project.component';
 import { User } from '@core/models/user';
+import { ModalEditProjectsComponent } from '../modal-edit-projects/modal-edit-projects.component';
 
 export interface Project {
   name: string;
@@ -156,6 +155,22 @@ export class ProjectsComponent {
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         this.getAllProjects();
+      }
+    });
+  }
+
+  openModalUpdateProjects(projectInformation: any): void {
+    const dialogRef = this.dialogModel.open(ModalEditProjectsComponent, {
+      minWidth: '300px',
+      maxWidth: '1000px',
+      disableClose: true, // Desactiva la acción de cerrar el modal al hacer clic fuera de ella
+      data: projectInformation // Envia la informacion del proyecto
+    });
+    // Se ejecuta cuando el observable emite un nuevo valor
+    dialogRef.afterClosed().subscribe(result => {
+      // Si el resultado es verdadero
+      if (result) {
+        this.getAllProjects(); // Actualiza la lista de usuarios
       }
     });
   }
