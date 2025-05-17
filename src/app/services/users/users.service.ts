@@ -18,7 +18,12 @@ export class UsersService {
   // Métodos del servicio
   // Crear un usuario
   createUser(userData: any): Observable<any> {
-    const endpoint = `${this.urlBaseServices}/api/v1/users/create`;
+    const endpoint = `${this.urlBaseServices}/api/v1/users/create-user`; // Definición de la url
+    return this.http.post<any>(endpoint, userData); // Llamada a la API
+  }
+  // Crear un administrador
+  createAdmin(userData: any): Observable<any> {
+    const endpoint = `${this.urlBaseServices}/api/v1/users/create-admin`;
     return this.http.post<any>(endpoint, userData);
   }
 
@@ -26,6 +31,7 @@ export class UsersService {
   updateUser(userId: number, userData: any): Observable<any> {
     const endpoint = `${this.urlBaseServices}/api/v1/users/update/${userId}`;
     return this.http.put<any>(endpoint, userData).pipe(
+      // Manejo de errores
       catchError((error) => {
         console.error('Error al actualizar el usuario:', error);
         throw error;
