@@ -33,21 +33,19 @@ export class ModalCreateUserComponent implements OnInit {
     private readonly _userService: UsersService,
     private readonly dialogRef: MatDialogRef<ModalCreateUserComponent>,
     private readonly _snackBar: MatSnackBar,
-  )
-
-  {
+  ) {
     this.createFormUsers();
     this.formCreateUser.controls['confirmPassword'].valueChanges.pipe(
-      debounceTime(1000),
-      distinctUntilChanged()
-    ).subscribe((value) => {
-      this.validatePassword(value);
+      debounceTime(1000), // Espera 1000ms antes de emitir el siguiente valor
+      distinctUntilChanged() // Ignora el siguiente valor si es igual al anterior
+    ).subscribe((value) => { // Se ejecuta cuando el observable emite un nuevo valor
+      this.validatePassword(value); // Llama al método para validar la contraseña
     })
   }
 
   // Método que se ejecuta al iniciar el componente
   ngOnInit(): void {
-    this.getAllAdministrator(); // Cargar los administradores
+    this.getAllAdministrator(); // Llama al método para cargar los administradores
   }
 
   // Método para crear el formulario con validaciones para cada campo
@@ -104,20 +102,37 @@ export class ModalCreateUserComponent implements OnInit {
       administrador_id: this.formCreateUser.get('administrador_id')?.value
     };
 
-    // Llama al servicio para crear el usuario
-    this._userService.createUser(userDataInformation).subscribe({
-      // Se ejecuta cuando el observable emite un nuevo valor
-      next: (response) => {
-        this._snackBar.open(response.message, 'Cerrar', { duration: 5000 }); // Muestra un mensaje de éxito durante 5 segundos
-        this.formCreateUser.reset(); // Reinicia los campos del formulario
-        this.dialogRef.close(true); // Cierra el modal
-      },
-      // Se ejecuta cuando el observable emite un error
-      error: (error) => {
-        const errorMessage = error.error?.result || 'Ocurrió un error inesperado. Por favor, intenta nuevamente.'; // Mensaje de error
-        this._snackBar.open(errorMessage, 'Cerrar', { duration: 5000 }); // Muestra el mensaje de error durante 5 segundos
-      }
-    });
+    if (userDataInformation.rol_id === 1) {
+      this._userService.createAdmin(userDataInformation).subscribe({
+        // Se ejecuta cuando el observable emite un nuevo valor
+        next: (response) => {
+          this._snackBar.open(response.message, 'Cerrar', { duration: 5000 }); // Muestra un mensaje de éxito durante 5 segundos
+          this.formCreateUser.reset(); // Reinicia los campos del formulario
+          this.dialogRef.close(true); // Cierra el modal
+        },
+        // Se ejecuta cuando el observable emite un error
+        error: (error) => {
+          const errorMessage = error.error?.result || 'Ocurrió un error inesperado. Por favor, intenta nuevamente.'; // Mensaje de error
+          this._snackBar.open(errorMessage, 'Cerrar', { duration: 5000 }); // Muestra el mensaje de error durante 5 segundos
+        }
+      });
+    } else if (userDataInformation.rol_id === 2) {
+      // Llama al servicio para crear el usuario
+      this._userService.createUser(userDataInformation).subscribe({
+        // Se ejecuta cuando el observable emite un nuevo valor
+        next: (response) => {
+          this._snackBar.open(response.message, 'Cerrar', { duration: 5000 }); // Muestra un mensaje de éxito durante 5 segundos
+          this.formCreateUser.reset(); // Reinicia los campos del formulario
+          this.dialogRef.close(true); // Cierra el modal
+        },
+        // Se ejecuta cuando el observable emite un error
+        error: (error) => {
+          const errorMessage = error.error?.result || 'Ocurrió un error inesperado. Por favor, intenta nuevamente.'; // Mensaje de error
+          this._snackBar.open(errorMessage, 'Cerrar', { duration: 5000 }); // Muestra el mensaje de error durante 5 segundos
+        }
+      });
+    }
+
   }
 
   // Método para validar la contraseña
