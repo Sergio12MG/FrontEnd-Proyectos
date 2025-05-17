@@ -136,7 +136,7 @@ export class ModalCreateUserComponent implements OnInit {
   this.showFieldAdministrator = true; // Habilitar el campo de administrador
   this.formCreateUser.get('administrador_id')?.setValidators([Validators.required]); // Agregar validadores
   this.formCreateUser.get('administrador_id')?.updateValueAndValidity(); // Actualizar la validación
-}
+  }
 
   // Método para ocultar el campo de administrador
   private hideAdministratorField() {
@@ -144,6 +144,6 @@ export class ModalCreateUserComponent implements OnInit {
   this.formCreateUser.get('administrador_id')?.clearValidators(); // Limpiar validadores
   this.formCreateUser.get('administrador_id')?.setValue(undefined); // Establecer valor nulo
   this.formCreateUser.get('administrador_id')?.updateValueAndValidity(); // Actualizar la validación
-}
+  }
 
 }
