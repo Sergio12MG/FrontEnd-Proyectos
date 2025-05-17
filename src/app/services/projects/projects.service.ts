@@ -19,12 +19,12 @@ export class ProjectsService {
   }
 
   updateProject(projectId: number, projectData: any): Observable<any> {
-    const endpoint = `${this.urlBaseServices}/api/v1/projects/update/${projectId}`;
+    const endpoint = `${this.urlBaseServices}/api/v1/projects/${projectId}`;
     return this.http.put<any>(endpoint, projectData);
   }
 
   deleteProject(projectId: number): Observable<any> {
-    const endpoint = `${this.urlBaseServices}/api/v1/projects/delete/${projectId}`;
+    const endpoint = `${this.urlBaseServices}/api/v1/projects/${projectId}`;
     return this.http.delete<any>(endpoint);
   }
 
