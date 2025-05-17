@@ -177,17 +177,17 @@ export class UsersComponent {
   // Abrir el modal de actualización de usuario
   openModalUpdateUsers(userInformation: any): void {
     const dialogRef = this.dialogModel.open(ModalEditUsersComponent, {
-      minWidth: '300px',
-      maxWidth: '1000px',
-      disableClose: true, // Desactiva laacción de cerrar el modal al hacer clic fuera de ella
-      data: { userInformation } // Envia la informacion del usuario
+        minWidth: '300px',
+        maxWidth: '1000px',
+        width: '840px',
+        disableClose: true,
+        data: userInformation // Pasar el usuario directamente
     });
-    // Se ejecuta cuando el observable emite un nuevo valor
+
     dialogRef.afterClosed().subscribe(result => {
-      // Si el resultado es verdadero
-      if (result) {
-        this.getAllUsersByAdministradorId(); // Actualiza la lista de usuarios
-      }
+        if (result) {
+            this.getAllUsersByAdministradorId();
+        }
     });
   }
 

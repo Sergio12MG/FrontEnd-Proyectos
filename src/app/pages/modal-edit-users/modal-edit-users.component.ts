@@ -18,6 +18,7 @@ import Swal from 'sweetalert2';
   templateUrl: './modal-edit-users.component.html',
   styleUrl: './modal-edit-users.component.scss'
 })
+
 export class ModalEditUsersComponent {
 
   formUpdateUsers!: FormGroup;
@@ -36,8 +37,11 @@ export class ModalEditUsersComponent {
 
   // Método que se ejecuta al iniciar el componente si se recibieron datos del componente padre
   ngOnInit() {
-    if (this.data?.user) {
-      this.loadUserData(this.data.user);
+    if (this.data) {
+        const userId = this.data.id || this.data.user?.id; // Maneja ambos casos
+        if (userId) {
+            this.loadUserData(this.data);
+        }
     }
   }
 
@@ -80,7 +84,7 @@ export class ModalEditUsersComponent {
     // Verifica si los datos en el formulario son válidos
     if (this.formUpdateUsers.valid) {
       const userData = this.formUpdateUsers.value; // Obtiene los datos del formulario
-      const userId = this.data?.user?.id; // Obtiene el ID del usuario
+      const userId = this.data.id || this.data.user?.id; // Maneja ambos casos // Obtiene el ID del usuario
 
       // Llama al servicio para actualizar los datos del usuario
       this._userService.updateUser(userId, userData).subscribe({
