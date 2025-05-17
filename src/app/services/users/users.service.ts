@@ -1,7 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http'; // Importación de herramientas de manejo de HTTP
 import { Injectable } from '@angular/core'; // Importación del módulo para inyección de dependencias
 import { URL_SERVICIOS } from '@core/models/config'; // Importación de las urls
-import { Observable } from 'rxjs'; // Importación de herramientas de manejo de observables
+import { catchError, Observable } from 'rxjs'; // Importación de herramientas de manejo de observables
 
 // Inyección de dependencias
 @Injectable({
@@ -25,7 +25,12 @@ export class UsersService {
   // Actualizar un usuario por su ID
   updateUser(userId: number, userData: any): Observable<any> {
     const endpoint = `${this.urlBaseServices}/api/v1/users/update/${userId}`;
-    return this.http.put<any>(endpoint, userData);
+    return this.http.put<any>(endpoint, userData).pipe(
+      catchError((error) => {
+        console.error('Error al actualizar el usuario:', error);
+        throw error;
+      })
+    );
   }
 
   // Eliminar un usuario por su ID
