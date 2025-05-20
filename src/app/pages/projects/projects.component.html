@@ -59,11 +59,14 @@
                                 </ng-container>
                                 <ng-container matColumnDef="administrator_name">
                                     <th mat-header-cell *matHeaderCellDef> Administrador </th>
-                                    <td mat-cell *matCellDef="let element"> {{ getUserName(element.nombre) }} </td>
+                                    <td mat-cell *matCellDef="let element"> {{ getAdministratorName(element.administrador_id) }} </td>
                                 </ng-container>
                                 <ng-container matColumnDef="action">
                                     <th mat-header-cell *matHeaderCellDef width="10%"> Acciones </th>
                                     <td mat-cell *matCellDef="let element">
+                                        <button mat-icon-button matTooltip="Ver detalles" (click)="openProjectDetails(element.id)">
+                                            <mat-icon>visibility</mat-icon>
+                                        </button>
                                         <button mat-icon-button matTooltip="Editar proyecto" (click)="openModalUpdateProjects(element)">
                                             <mat-icon>edit</mat-icon>
                                         </button>
