@@ -39,10 +39,10 @@ export class ModalEditProjectsComponent {
 
   ngOnInit() {
     if (this.data) {
-        const projectId = this.data.id || this.data.project?.id; // Maneja ambos casos
-        if (projectId) {
-            this.loadProjectData(this.data);
-        }
+      const projectId = this.data.id || this.data.project?.id; // Maneja ambos casos
+      if (projectId) {
+        this.loadProjectData(this.data);
+      }
     }
   }
 
