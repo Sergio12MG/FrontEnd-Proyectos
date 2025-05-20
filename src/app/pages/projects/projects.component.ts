@@ -21,6 +21,9 @@ import { debounce, debounceTime, distinctUntilChanged } from 'rxjs';
 import { ModalCreateProjectComponent } from '../modal-create-project/modal-create-project.component';
 import { User } from '@core/models/user';
 import { ModalEditProjectsComponent } from '../modal-edit-projects/modal-edit-projects.component';
+import { Router, RouterModule } from '@angular/router';
+import { ActivatedRoute, ParamMap } from '@angular/router';
+import { UsersService } from 'app/services/users/users.service';
 
 export interface Project {
   name: string;
@@ -44,11 +47,13 @@ export interface Project {
     MatPaginatorModule,
     MatTableModule,
     MatProgressSpinnerModule,
-    BreadcrumbComponent
+    BreadcrumbComponent,
+    RouterModule
   ],
   templateUrl: './projects.component.html',
   styleUrl: './projects.component.scss'
 })
+
 export class ProjectsComponent {
 
   displayedColumns: string[] = [
@@ -56,7 +61,7 @@ export class ProjectsComponent {
     'description',
     'date',
     'administrator_name',
-    'action'
+    'action',
   ];
 
   breadscrums = [
@@ -80,7 +85,8 @@ export class ProjectsComponent {
   // search
   projectFormSearchFilter!: FormGroup;
   projectsList: any[] = [];
-
+  administratorsValue: any[] = [];
+  administratorsMap: { [key: number]: string } = {};
   isLoading = false;
 
   projectDefaultFilterSearch: any = {
@@ -91,9 +97,14 @@ export class ProjectsComponent {
   constructor(
     private readonly _formBuilder: FormBuilder,
     private readonly projectService: ProjectsService,
+    private readonly _userService: UsersService,
     private readonly dialogModel: MatDialog,
-    private readonly _snackBar: MatSnackBar
-  ) { }
+    private readonly _snackBar: MatSnackBar,
+    private activatedRoute: ActivatedRoute,
+    private router: Router,
+  ) {
+    this.getAllAdministrator();
+  }
 
   ngOnInit(): void {
     this.createProjectFormSearchFilter();
@@ -109,13 +120,30 @@ export class ProjectsComponent {
     });
   }
 
-  getUserName(rol_id: number): string {
-    let nombre = '';
+  // Método para obtener todos los administradores
+  getAllAdministrator(): void {
+    this._userService.getAllAdministrator().subscribe({
+      // Se ejecuta cuando el observable emite un nuevo valor
+      next: (res) => {
+        this.administratorsValue = res.users; // Almacena los administradores
+        this.createAdministratorsMap(); // Crea el mapa de administradores
+      },
+      // Se ejecuta cuando el observable emite un error
+      error: (err) => {
+        console.error(err); // Emite un mensaje de error a la consola
+      }
+    });
+  }
 
-    if (rol_id === 2) {
-      nombre = User.name;
-    }
-    return nombre;
+  createAdministratorsMap(): void {
+    this.administratorsMap = {};
+    this.administratorsValue.forEach(admin => {
+      this.administratorsMap[admin.id] = admin.nombre;
+    })
+  }
+
+  getAdministratorName(adminId: number): string {
+      return this.administratorsMap[adminId] || 'Administrador desconocido';
   }
 
   getAllProjects(filters?: any): void {
@@ -176,7 +204,7 @@ export class ProjectsComponent {
   }
 
   openProjectDetails(projectId: number): void {
-    console.log(projectId);
+    this.router.navigate(['/projects', projectId]);
   }
 
   deleteProject(projectId: number): void {
