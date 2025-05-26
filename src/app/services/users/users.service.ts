@@ -10,12 +10,12 @@ import { catchError, Observable } from 'rxjs'; // Importación de herramientas d
 
 export class UsersService {
 
-  urlBaseServices: string = URL_SERVICIOS; // Definición de la url
+  urlBaseServices: string = URL_SERVICIOS; // URL de la API
 
-  // Constructor
+  // se inyecta el servicio HttpClient
   constructor(private readonly http: HttpClient) { }
 
-  // Métodos del servicio
+  // ================== MÉTODOS DEL SERVICIO ==================
   // Crear un usuario
   createUser(userData: any): Observable<any> {
     const endpoint = `${this.urlBaseServices}/api/v1/users/create-user`; // Definición de la url
