@@ -56,6 +56,7 @@ export interface Project {
 
 export class ProjectsComponent {
 
+  // Datos a mostrar en la tabla
   displayedColumns: string[] = [
     'name',
     'description',
@@ -68,7 +69,7 @@ export class ProjectsComponent {
     {
       title: 'Gestión de proyectos',
       items: [],
-      active: 'Datos básicos',
+      active: 'Listado de proyectos',
     },
   ];
 
@@ -78,42 +79,43 @@ export class ProjectsComponent {
     }
   ];
 
-  // table
-  dataSource = new MatTableDataSource<any>([]);
-  @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;
-
-  // search
-  projectFormSearchFilter!: FormGroup;
-  projectsList: any[] = [];
-  administratorsValue: any[] = [];
-  administratorsMap: { [key: number]: string } = {};
+  dataSource = new MatTableDataSource<any>([]); // Fuente de datos
+  @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator; // Paginador para los resultados
+  projectFormSearchFilter!: FormGroup; // Formulario de filtrado
+  projectsList: any[] = []; // Lista de proyectos
+  administratorsValue: any[] = []; // Lista de administradores
+  administratorsMap: { [key: number]: string } = {}; // Mapa de administradores
   isLoading = false;
 
+  // Valores por defecto de los filtros
   projectDefaultFilterSearch: any = {
     name: undefined,
     userName: undefined
   };
 
   constructor(
-    private readonly _formBuilder: FormBuilder,
-    private readonly projectService: ProjectsService,
-    private readonly _userService: UsersService,
-    private readonly dialogModel: MatDialog,
-    private readonly _snackBar: MatSnackBar,
-    private activatedRoute: ActivatedRoute,
-    private router: Router,
+    private readonly _formBuilder: FormBuilder, // Servicio para construir formularios
+    private readonly projectService: ProjectsService, // Servicio de proyectos
+    private readonly _userService: UsersService, // Servicio de usuarios
+    private readonly dialogModel: MatDialog, // Servicio de dialogos
+    private readonly _snackBar: MatSnackBar, // Servicio de notificaciones
+    private activatedRoute: ActivatedRoute, // Servicio de rutas
+    private router: Router, // Servicio de rutas
   ) {
-    this.getAllAdministrator();
+    this.getAllAdministrator(); // Llama al método para obtener los administradores
   }
 
+  // Método que se ejecuta al iniciar el componente
   ngOnInit(): void {
-    this.createProjectFormSearchFilter();
-    this.getAllProjects();
-    this.handleProjectFilterChange('name', 'name');
-    this.handleProjectFilterChange('userName', 'userName');
+    this.createProjectFormSearchFilter(); // Crea el formulario de filtrado
+    this.getAllProjects(); // Obtiene todos los proyectos
+    this.handleProjectFilterChange('name', 'name'); // Maneja los cambios en los filtros por nombre
+    this.handleProjectFilterChange('userName', 'userName'); // Maneja los cambios en los filtros por administrador
   }
 
+  // Método para crear el formulario de filtrado
   private createProjectFormSearchFilter() {
+    // Crea el formulario
     this.projectFormSearchFilter = this._formBuilder.group({
       name: [''],
       userName: ['']
@@ -122,6 +124,7 @@ export class ProjectsComponent {
 
   // Método para obtener todos los administradores
   getAllAdministrator(): void {
+    // Llama al servicio para obtener los administradores
     this._userService.getAllAdministrator().subscribe({
       // Se ejecuta cuando el observable emite un nuevo valor
       next: (res) => {
@@ -135,24 +138,29 @@ export class ProjectsComponent {
     });
   }
 
+  // Método para crear el mapa de administradores
   createAdministratorsMap(): void {
-    this.administratorsMap = {};
-    this.administratorsValue.forEach(admin => {
-      this.administratorsMap[admin.id] = admin.nombre;
-    })
+    this.administratorsMap = {}; // Inicializa el mapa
+    this.administratorsValue.forEach(admin => { // Recorre la lista de administradores
+      this.administratorsMap[admin.id] = admin.nombre; // Agrega el administrador al mapa
+    });
   }
 
+  // Método para obtener el nombre del administrador
   getAdministratorName(adminId: number): string {
       return this.administratorsMap[adminId] || 'Administrador desconocido';
   }
 
+  // Método para obtener todos los proyectos
   getAllProjects(filters?: any): void {
     this.isLoading = true;
+    // Llama al servicio para obtener los proyectos
     this.projectService.getAllProjects().subscribe({
+      // Se ejecuta cuando el observable emite un nuevo valor
       next: (res) => {
-        this.projectsList = res;
-        this.dataSource.data = res.projects;
-        this.dataSource.paginator = this.paginator;
+        this.projectsList = res; // Almacena la lista de proyectos
+        this.dataSource.data = res.projects; // Actualiza la fuente de datos
+        this.dataSource.paginator = this.paginator; // Actualiza el paginador
         this.isLoading = false;
       },
       error: () => {
@@ -161,33 +169,39 @@ export class ProjectsComponent {
     });
   }
 
+  // Método para manejar los cambios en los filtros
   handleProjectFilterChange(controlName: string, filterKey: string) {
+    // Escucha los cambios en los controles
     this.projectFormSearchFilter.controls[controlName].valueChanges.pipe(
-      debounceTime(500),
-      distinctUntilChanged()
-    ).subscribe((value: any) => {
-      this.projectDefaultFilterSearch[filterKey] = value;
-      console.log(this.projectDefaultFilterSearch);
-      this.getAllProjects({ ...this.projectDefaultFilterSearch, [filterKey]: value });
+      debounceTime(500), // Espera 500ms antes de emitir el siguiente valor
+      distinctUntilChanged() // Ignora el siguiente valor si es igual al anterior
+    ).subscribe((value: any) => { // Se ejecuta cuando el observable emite un nuevo valor
+      this.projectDefaultFilterSearch[filterKey] = value; // Actualiza el valor del filtro
+      console.log(this.projectDefaultFilterSearch); // Muestra el valor del filtro en la consola
+      this.getAllProjects({ ...this.projectDefaultFilterSearch, [filterKey]: value }); // Llama al servicio para obtener los proyectos con los filtros actualizados
     });
   }
 
+  // Metodo para abrir el modal de creación de proyectos
   openModalCreateProject(): void {
+    // Abre el modal
     const dialogRef = this.dialogModel.open(ModalCreateProjectComponent, {
       minWidth: '300px',
       maxWidth: '1000px',
       width: '840px',
-      disableClose: true,
+      disableClose: true, // Desactiva la acción de cerrar el modal al hacer clic por fuera
     });
-
+    // Se ejecuta cuando el observable emite un nuevo valor
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.getAllProjects();
+        this.getAllProjects(); // Actualiza la lista de proyectos
       }
     });
   }
 
+  // Método para abrir el modal de actualización de proyectos
   openModalUpdateProjects(projectInformation: any): void {
+    // Abre el modal
     const dialogRef = this.dialogModel.open(ModalEditProjectsComponent, {
       minWidth: '300px',
       maxWidth: '1000px',
@@ -203,19 +217,23 @@ export class ProjectsComponent {
     });
   }
 
+  // Método para abrir la vista de detalles de un proyecto
   openProjectDetails(projectId: number): void {
-    this.router.navigate(['/projects', projectId]);
+    this.router.navigate(['/page/projects/detail', projectId]); // Navega hasta la ruta de detalles del proyecto seleccionado
   }
 
+  // Método para eliminar un proyecto
   deleteProject(projectId: number): void {
+    // Llama al servicio para eliminar el proyecto
     this.projectService.deleteProject(projectId).subscribe({
+      // Se ejecuta cuando el observable emite un nuevo valor
       next: (response) => {
-        this._snackBar.open(response.message, 'Cerrar', { duration: 5000 });
-        this.getAllProjects();
+        this._snackBar.open(response.message, 'Cerrar', { duration: 5000 }); // Muestra un mensaje de éxito durante 5 segundos
+        this.getAllProjects(); // Actualiza la lista de proyectos
       },
       error: (error) => {
-        const errorMessage = error.error?.message || 'Error al eliminar el proyecto';
-        this._snackBar.open(errorMessage, 'Cerrar', { duration: 5000 });
+        const errorMessage = error.error?.message || 'Error al eliminar el proyecto'; // Mensaje de error
+        this._snackBar.open(errorMessage, 'Cerrar', { duration: 5000 }); // Muestra el mensaje de error durante 5 segundos
       }
     });
   }
