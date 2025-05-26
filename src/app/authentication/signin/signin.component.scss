@@ -2,10 +2,12 @@
 .left-img {
     background-size: contain;
     background-repeat: no-repeat;
+    background-position: center;
+    background-size: 700px;
     width: 100%;
     background-color: white;
     height: 100%;
-    margin-left: 80px;
+    margin-left: 0;
 }
 
 .auth-container {
