@@ -26,13 +26,13 @@ export class ModalEditUsersComponent {
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: any, // Recibe los datos del componente padre
-    private readonly _formBuilder: FormBuilder,
-    private readonly _snackBar: MatSnackBar,
-    private readonly _userService: UsersService,
-    private readonly dialogRef: MatDialogRef<ModalEditUsersComponent>
+    private readonly _formBuilder: FormBuilder, // Servicio para construir formularios
+    private readonly _snackBar: MatSnackBar, // Servicio de notificaciones
+    private readonly _userService: UsersService, // Servicio de usuarios
+    private readonly dialogRef: MatDialogRef<ModalEditUsersComponent> // Servicio de dialogos
   ) {
-    this.updateFormUsers();
-    this.getAllAdministrator();
+    this.updateFormUsers(); // Llama al método para crear el formulario
+    this.getAllAdministrator(); // Llama al método para obtener los administradores
   }
 
   // Método que se ejecuta al iniciar el componente si se recibieron datos del componente padre
@@ -40,7 +40,7 @@ export class ModalEditUsersComponent {
     if (this.data) {
         const userId = this.data.id || this.data.user?.id; // Maneja ambos casos
         if (userId) {
-            this.loadUserData(this.data);
+            this.loadUserData(this.data); // Carga los datos del usuario
         }
     }
   }
@@ -57,6 +57,7 @@ export class ModalEditUsersComponent {
 
   // Método para cargar los datos del usuario en el formulario
   loadUserData(user: any) {
+    // Carga los datos del usuario en el formulario
     this.formUpdateUsers.patchValue({
       nombre: user.nombre,
       email: user.email,
@@ -67,6 +68,7 @@ export class ModalEditUsersComponent {
 
   // Método para obtener todos los administradores
   getAllAdministrator() {
+    // Llama al servicio para obtener los administradores
     this._userService.getAllAdministrator().subscribe({
       // Se ejecuta cuando el observable emite un nuevo valor
       next: (res) => {
