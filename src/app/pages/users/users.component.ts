@@ -74,14 +74,10 @@ export class UsersComponent {
     }
   ];
 
-  // table
   dataSource = new MatTableDataSource<any>([]); // Fuente de datos
   @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator; // Paginador para los resultados
-
-  // search
   userFormSearchFilter!: FormGroup; // Formulario de busqueda
   usersList: any[] = []; // Listado de usuarios
-
   isLoading = false;
 
   // Filtros para la búsqueda de usuarios
@@ -91,18 +87,18 @@ export class UsersComponent {
   }
 
   constructor(
-    private readonly _formBuilder: FormBuilder,
-    private readonly userService: UsersService,
-    private readonly dialogModel: MatDialog,
-    private readonly _snackBar: MatSnackBar
+    private readonly _formBuilder: FormBuilder, // Servicio para construir formularios
+    private readonly userService: UsersService, // Servicio de usuarios
+    private readonly dialogModel: MatDialog, // Servicio de dialogos
+    private readonly _snackBar: MatSnackBar // Servicio de notificaciones
   ) { }
 
   // Metodo que se ejecuta al iniciar el componente
   ngOnInit(): void {
-    this.createUserFormSearchFilter();
-    this.getAllUsersByAdministradorId();
-    this.handleUserFilterChange('name', 'name');
-    this.handleUserFilterChange('email', 'email');
+    this.createUserFormSearchFilter(); // Crea el formulario
+    this.getAllUsersByAdministradorId(); // Obtiene todos los usuarios
+    this.handleUserFilterChange('name', 'name'); // Maneja los cambios en los filtros por nombre
+    this.handleUserFilterChange('email', 'email'); // Maneja los cambios en los filtros por correo
   }
 
   // Métodos
@@ -128,6 +124,7 @@ export class UsersComponent {
 
   // Manejar los cambios en los filtros de busqueda
   private handleUserFilterChange(controlName: string, filterKey: string) {
+    // Escucha los cambios en los controles
     this.userFormSearchFilter.controls[controlName].valueChanges.pipe(
       debounceTime(500), // Espera 500ms antes de emitir el siguiente valor
       distinctUntilChanged() // Ignora el siguiente valor si es igual al anterior
@@ -159,11 +156,12 @@ export class UsersComponent {
 
   // Abrir el modal de creación de usuario
   openModalCreateUser(): void {
+    // Abre el modal
     const dialogRef = this.dialogModel.open(ModalCreateUserComponent, {
       minWidth: '300px',
       maxWidth: '1000px',
       width: '840px',
-      disableClose: true, // Desactiva la acción de cerrar el modal al hacer clic fuera de ella
+      disableClose: true, // Desactiva la acción de cerrar el modal al hacer clic por fuera
     });
     // Se ejecuta cuando el observable emite un nuevo valor
     dialogRef.afterClosed().subscribe(result => {
@@ -176,6 +174,7 @@ export class UsersComponent {
 
   // Abrir el modal de actualización de usuario
   openModalUpdateUsers(userInformation: any): void {
+    // Abre el modal
     const dialogRef = this.dialogModel.open(ModalEditUsersComponent, {
         minWidth: '300px',
         maxWidth: '1000px',
@@ -184,15 +183,17 @@ export class UsersComponent {
         data: userInformation // Pasar el usuario directamente
     });
 
+    // Se ejecuta cuando el observable emite un nuevo valor
     dialogRef.afterClosed().subscribe(result => {
         if (result) {
-            this.getAllUsersByAdministradorId();
+            this.getAllUsersByAdministradorId(); // Actualiza la lista de usuarios
         }
     });
   }
 
   // Eliminar un usuario
   deleteUser(userId: number): void {
+    // Llama al servicio para eliminar el usuario
     this.userService.deleteUser(userId).subscribe({
       // Se ejecuta cuando el observable emite un nuevo valor
       next: (response) => {
