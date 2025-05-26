@@ -1,1 +1,20 @@
-<p>modal-assign-users-projects works!</p>
+<div class="col-lg-12 col-md-12 col-sm-12">
+    <h2 mat-dialog-title>Asignar Usuarios a Proyecto</h2>
+    <div mat-dialog-content>
+        <div class="col-lg-12 col-md-12 col-sm-12 custom-margin mt-4">
+            <mat-form-field class="w-100" appearance="outline">
+                <mat-label>Seleccionar Usuarios</mat-label>
+                <mat-select [formControl]="selectedUsersControl" multiple>
+                    @for (user of availableUsers; track user.id) {
+                        <mat-option [value]="user.id">{{ user.nombre }} ({{ user.email }})</mat-option>
+                    }
+                    <mat-option *ngIf="availableUsers.length === 0" disabled>No hay usuarios disponibles</mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+    </div>
+    <mat-dialog-actions align="end">
+        <button mat-button (click)="onCancel()">Cancelar</button>
+        <button mat-button color="primary" [disabled]="selectedUsersControl.value?.length === 0" (click)="assignUsers()">Asignar</button>
+    </mat-dialog-actions>
+</div>
