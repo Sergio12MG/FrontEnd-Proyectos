@@ -39,6 +39,7 @@ export class ProjectsDetailComponent implements OnInit {
   constructor(
     private route: ActivatedRoute, // Servicio de rutas
     private projectService: ProjectsService, // Servicio de proyectos
+    private router: Router, // Servicio de rutas
     private _snackBar: MatSnackBar, // Servicio de notificaciones
     private dialog: MatDialog // Servicio de diálogos
   ) { }
@@ -121,5 +122,9 @@ export class ProjectsDetailComponent implements OnInit {
         this._snackBar.open('Usuarios asignados exitosamente.', 'Cerrar', { duration: 5000 });
       }
     });
+  }
+
+  closeProjectDetails(): void {
+    this.router.navigate(['/page/projects']);
   }
 }
