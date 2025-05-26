@@ -15,7 +15,7 @@ export const PAGES_ROUTE: Route[] = [
         component: ProjectsComponent,
     },
     {
-        path: 'projects/:id',
+        path: 'projects/detail/:id',
         component: ProjectsDetailComponent,
     },
 ]
