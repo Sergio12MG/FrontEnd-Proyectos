@@ -29,13 +29,13 @@ export class ModalCreateUserComponent implements OnInit {
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: any, // Recibe los datos del componente padre
-    private readonly _formBuilder: FormBuilder,
-    private readonly _userService: UsersService,
-    private readonly dialogRef: MatDialogRef<ModalCreateUserComponent>,
-    private readonly _snackBar: MatSnackBar,
+    private readonly _formBuilder: FormBuilder, // Servicio para construir formularios
+    private readonly _userService: UsersService, // Servicio de usuarios
+    private readonly dialogRef: MatDialogRef<ModalCreateUserComponent>, // Servicio de dialogos
+    private readonly _snackBar: MatSnackBar, // Servicio de notificaciones
   ) {
-    this.createFormUsers();
-    this.formCreateUser.controls['confirmPassword'].valueChanges.pipe(
+    this.createFormUsers(); // Llama al método para crear el formulario
+    this.formCreateUser.controls['confirmPassword'].valueChanges.pipe( // Escucha los cambios en el campo de confirmar contraseña
       debounceTime(1000), // Espera 1000ms antes de emitir el siguiente valor
       distinctUntilChanged() // Ignora el siguiente valor si es igual al anterior
     ).subscribe((value) => { // Se ejecuta cuando el observable emite un nuevo valor
@@ -45,11 +45,12 @@ export class ModalCreateUserComponent implements OnInit {
 
   // Método que se ejecuta al iniciar el componente
   ngOnInit(): void {
-    this.getAllAdministrator(); // Llama al método para cargar los administradores
+    this.getAllAdministrator(); // Carga los administradores
   }
 
   // Método para crear el formulario con validaciones para cada campo
   createFormUsers() {
+    // Crea el formulario
     this.formCreateUser = this._formBuilder.group({
       nombre: ['', Validators.required],
       email: ['', Validators.required],
@@ -103,6 +104,7 @@ export class ModalCreateUserComponent implements OnInit {
     };
 
     if (userDataInformation.rol_id === 1) {
+      // Llama al servicio para crear el administrador
       this._userService.createAdmin(userDataInformation).subscribe({
         // Se ejecuta cuando el observable emite un nuevo valor
         next: (response) => {
@@ -132,7 +134,6 @@ export class ModalCreateUserComponent implements OnInit {
         }
       });
     }
-
   }
 
   // Método para validar la contraseña
